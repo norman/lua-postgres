@@ -1,0 +1,27 @@
+--- A Postgres result.
+module("postgres.result")
+
+-------------------------------------------------------------------------------
+-- Fetches a row numerically, and advances the internal pointer to the next row.
+-- @return A table
+-- @example
+--  local result, err = conn:execute("SELECT name FROM members LIMIT 10")
+--  if err then error(err) end
+--  for i=1,#result do
+--    local row = result:fetch()
+--    print(row[1]) -- prints the name
+--  end
+function fetch()
+
+-------------------------------------------------------------------------------
+-- Fetches a row as an associative array, and advances the internal pointer to the next row.
+-- @return A table
+-- @example
+--  local result, err = conn:execute("SELECT name FROM members LIMIT 10")
+--  if err then error(err) end
+--  for i=1,#result do
+--    local row = result:fetch_assoc()
+--    print(row.name)
+--  end
+function fetch_assoc()
+

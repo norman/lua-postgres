@@ -1,0 +1,21 @@
+-------------------------------------------------------------------------------
+-- A basic Postgres driver for Lua.
+module("postgres")
+
+-------------------------------------------------------------------------------
+-- Creates a new connection object. Note that this does not immediately connect
+-- to the database, it simply creates a handle. You can then invoke connection.open
+-- to make the connection immediately. If you do not open the connection manually,
+-- lua-postgres will establish a connection the first time it is needed.
+-- @param connection_string A Postgres connection string. See the <a
+--   href="http://www.postgresql.org/docs/9.0/static/libpq-connect.html">documentation
+--   for libpq</a> for the full list of values that can be in the string.
+-- @example
+--    local conn = postgres.connection('dbname=my_db host=localhost user=postgres')
+-- @return A Postgres connection
+function connection(connection_string)
+
+-------------------------------------------------------------------------------
+-- Get the driver version.
+-- @return A version string, e.g. "0.0.1".
+function version()
