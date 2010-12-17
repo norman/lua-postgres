@@ -1,0 +1,36 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+close	src/connection.c	/^static void close(connection *conn) {$/;"	f	file:
+conn_close	src/connection.c	/^static int conn_close(lua_State *L) {$/;"	f	file:
+conn_execute	src/connection.c	/^static int conn_execute(lua_State *L) {$/;"	f	file:
+conn_open	src/connection.c	/^static int conn_open(lua_State *L) {$/;"	f	file:
+connect	src/connection.c	/^static int connect(lua_State *L, connection *conn) {$/;"	f	file:
+connection_gc	src/connection.c	/^static int connection_gc(lua_State *L) {$/;"	f	file:
+execute_with_params	src/connection.c	/^static int execute_with_params(lua_State *L) {$/;"	f	file:
+execute_without_params	src/connection.c	/^static int execute_without_params(lua_State *L) {$/;"	f	file:
+functions	src/postgres.c	/^static const struct luaL_Reg functions [] = {$/;"	v	typeref:struct:luaL_Reg	file:
+get_connection	src/connection.c	/^static connection* get_connection(lua_State *L) {$/;"	f	file:
+get_result	src/result.c	/^static result* get_result(lua_State *L) {$/;"	f	file:
+luaopen_postgres	src/postgres.c	/^int luaopen_postgres(lua_State *L) {$/;"	f
+methods	src/connection.c	/^static const luaL_Reg methods[] = {$/;"	v	file:
+methods	src/result.c	/^static const luaL_Reg methods[] = {$/;"	v	file:
+module_connection	src/postgres.c	/^static int module_connection(lua_State *L) {$/;"	f	file:
+module_version	src/postgres.c	/^static int module_version(lua_State *L) {$/;"	f	file:
+new_field	src/field.c	/^int new_field(lua_State *L, PGresult *pg_result, int number, const char *name) {$/;"	f
+new_result	src/result.c	/^int new_result(lua_State *L, PGresult *pg_result) {$/;"	f
+process_result	src/connection.c	/^static int process_result(lua_State *L, connection *conn, PGresult *pg_result) {$/;"	f	file:
+push_value	src/result.c	/^static void push_value(lua_State *L, result *res, int i) {$/;"	f	file:
+register_connection_methods	src/connection.c	/^void register_connection_methods(lua_State *L) {$/;"	f
+register_module_functions	src/postgres.c	/^void register_module_functions(lua_State *L) {$/;"	f
+register_result_methods	src/result.c	/^void register_result_methods(lua_State *L) {$/;"	f
+result_call	src/result.c	/^static int result_call(lua_State *L) {$/;"	f	file:
+result_fetch	src/result.c	/^static int result_fetch(lua_State *L) {$/;"	f	file:
+result_fetch_assoc	src/result.c	/^static int result_fetch_assoc(lua_State *L) {$/;"	f	file:
+result_fields	src/result.c	/^static int result_fields(lua_State *L) {$/;"	f	file:
+result_gc	src/result.c	/^static int result_gc(lua_State *L) {$/;"	f	file:
+result_num_rows	src/result.c	/^static int result_num_rows(lua_State *L) {$/;"	f	file:
+validate_open	src/result.c	/^static void validate_open(lua_State *L, result *res) {$/;"	f	file:
