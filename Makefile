@@ -5,7 +5,7 @@ LIBFLAG= -g -Wall -shared -fpic
 PG_LIBDIR=`pg_config --libdir`
 PG_INCDIR=`pg_config --includedir`
 
-# CC=llvm-gcc
+CC=llvm-gcc
 
 postgres.so: src/*.c
 	$(CC) -o postgres.so $(LIBFLAG) $(CFLAGS) src/*.c -L$(LUA_LIBDIR) -llua -I$(PG_INCDIR) -L$(PG_LIBDIR) -lpq

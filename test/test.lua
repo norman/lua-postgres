@@ -109,11 +109,67 @@ context("A result", function()
     local row = result:fetch_assoc()
     assert_equal("Joe Schmoe", row.name)
   end)
-  
+
   it("should get the number of rows", function()
     result = emit(query)
     assert_equal(3, result:num_rows())
     assert_equal(3, #result)
   end)
-  
+
+  it("should be freeable", function()
+    result = emit(query)
+    result:free()
+    assert_error(function() result:fetch() end)
+  end)
+
+end)
+
+context("A field", function()
+
+  local field
+
+  before(function()
+    emit "insert into people (name) values ('Joe Schmoe')"
+    local result = emit("SELECT id, name FROM people")
+    local fields = result:fields()
+    field = fields[2]
+  end)
+
+  after(function()
+    emit "delete from people"
+  end)
+
+  it("should have a name", function()
+    assert_equal("name", field:name())
+  end)
+
+  it("should have a number", function()
+    assert_equal(1, field:number())
+  end)
+
+  it("should have a table_oid", function()
+    assert_equal("number", type(field:table_oid()))
+  end)
+
+  it("should have a table column number", function()
+    assert_equal(2, field:table_column_number())
+  end)
+
+  it("should indicate if it's binary", function()
+    assert_false(field:is_binary())
+  end)
+
+  it("should have a type oid", function()
+    assert_equal("number", type(field:type_oid()))
+  end)
+
+  it("should have a size", function()
+    assert_equal(-1, field:size())
+  end)
+
+  it("should have a modifier", function()
+    assert_equal(104, field:modifier())
+  end)
+
+
 end)

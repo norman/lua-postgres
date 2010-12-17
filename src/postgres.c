@@ -42,5 +42,6 @@ int luaopen_postgres(lua_State *L) {
     register_module_functions(L);
     register_connection_methods(L);
     register_result_methods(L);
+    register_field_methods(L);
     return 1;
 }

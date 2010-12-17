@@ -11,7 +11,7 @@ module("postgres")
 --   href="http://www.postgresql.org/docs/9.0/static/libpq-connect.html">documentation
 --   for libpq</a> for the full list of values that can be in the string.
 -- @example
---    local conn = postgres.connection('dbname=my_db host=localhost user=postgres')
+-- local conn = postgres.connection('dbname=my_db host=localhost user=postgres')
 -- @return A Postgres connection
 function connection(connection_string)
 

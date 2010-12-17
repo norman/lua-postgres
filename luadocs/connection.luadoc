@@ -5,8 +5,8 @@ module("postgres.connection")
 -------------------------------------------------------------------------------
 -- Opens the connection to the Postgres server.
 -- @example
---   local ok, err = conn:open()
---   if err then error(err) end
+-- local ok, err = conn:open()
+-- if err then error(err) end
 -- @return status - Whether or not the connection succeeded.
 -- @return message - If the connection failed to open, an error message.
 function open()
@@ -18,6 +18,6 @@ function open()
 -- @return result - A result userdata or nil on failure.
 -- @return message - If execution failed, an error message
 -- @example
---   local result, error = conn:execute("SELECT * FROM users WHERE name = $1", "joe")
---   local result, error = conn:execute("SELECT * FROM users WHERE name = $1 AND age < $2", {"joe", 100})
+-- local result, error = conn:execute("SELECT * FROM users WHERE name = $1", "joe")
+-- local result, error = conn:execute("SELECT * FROM users WHERE name = $1 AND age < $2", {"joe", 100})
 function execute(sql, params)

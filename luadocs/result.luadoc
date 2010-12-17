@@ -1,27 +1,50 @@
---- A Postgres result.
+-------------------------------------------------------------------------------
+-- A Postgres result.
+-- Postgres results respond to the __len and __call metamethods, so it's possible to
+-- perform most useful operations on a result without directly invoking methods.
+-- The example below shows the recommended way to access the rows in a result.
+--
+-- <h3>Example:</h3>
+-- <pre class="example">
+-- local result = conn:execute("SELECT * FROM members LIMIT 10")
+-- assert(10 == #result)
+-- for row, index in result do
+--   print(string.format("Info for result %d:", index))
+--   print(row.id, row.name, row.email)
+-- end
+-- </pre>
+-- Lua Postgres also sets a __gc metamethod on results, so there usually is no
+-- need to free the result when you're done with it. Lua's garbage collection
+-- will take care of this automatically. However, you can manually free the result
+-- if you choose.
 module("postgres.result")
 
 -------------------------------------------------------------------------------
 -- Fetches a row numerically, and advances the internal pointer to the next row.
 -- @return A table
 -- @example
---  local result, err = conn:execute("SELECT name FROM members LIMIT 10")
---  if err then error(err) end
---  for i=1,#result do
---    local row = result:fetch()
---    print(row[1]) -- prints the name
---  end
+-- local result, err = conn:execute("SELECT name FROM members LIMIT 10")
+-- if err then error(err) end
+-- for i = 1, #result do
+--   local row = result:fetch()
+--   print(row[1]) -- prints the name
+-- end
 function fetch()
 
 -------------------------------------------------------------------------------
 -- Fetches a row as an associative array, and advances the internal pointer to the next row.
 -- @return A table
 -- @example
---  local result, err = conn:execute("SELECT name FROM members LIMIT 10")
---  if err then error(err) end
---  for i=1,#result do
---    local row = result:fetch_assoc()
---    print(row.name)
---  end
+-- local result, err = conn:execute("SELECT name FROM members LIMIT 10")
+-- if err then error(err) end
+-- for i = 1, #result do
+--   local row = result:fetch_assoc()
+--   print(row.name)
+-- end
 function fetch_assoc()
 
+
+-------------------------------------------------------------------------------
+-- Frees the memory used by a result. After invoking free(), any attempt to
+-- to perform operations on the result will raise an error.
+function free()
