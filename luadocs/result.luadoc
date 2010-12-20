@@ -48,3 +48,19 @@ function fetch_assoc()
 -- Frees the memory used by a result. After invoking free(), any attempt to
 -- to perform operations on the result will raise an error.
 function free()
+
+-------------------------------------------------------------------------------
+-- Gets an array of fields in the result set.
+-- @return A table
+-- @see postgres.field
+function fields()
+
+-------------------------------------------------------------------------------
+-- Gets the number of tuples in the result. You can also invoke this method with
+-- the length operator (#).
+-- @return A number
+-- @example
+-- assert(10 == #result)
+-- assert(10 == result:num_rows())
+function num_rows()
+

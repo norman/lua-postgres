@@ -4,7 +4,7 @@
  * Get this library's version.
  */
 static int module_version(lua_State *L) {
-    lua_pushstring(L, LUA_POSTGRES_VERSION);
+    lua_pushstring(L, LPG_VERSION);
     return 1;
 }
 
@@ -14,10 +14,10 @@ static int module_version(lua_State *L) {
 static int module_connection(lua_State *L) {
     const char *connect_string = luaL_optstring(L, 1, "dbname = postgres");
     connection *p = ((connection *) (lua_newuserdata(L, sizeof(connection))));
-    luaL_getmetatable(L, CONNECTION_METATABLE);
+    luaL_getmetatable(L, LPG_CONNECTION_METATABLE);
     lua_setmetatable(L, -2);
     p->pg_conn        = NULL;
-    p->state          = CONN_NEW;
+    p->state          = LPG_CONN_NEW;
     p->connect_string = connect_string;
     return 1;
 }

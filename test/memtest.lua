@@ -19,12 +19,15 @@ emit "insert into people (name) values ('Joe Schmoe')"
 emit "insert into people (name) values ('John Doe')"
 emit "insert into people (name) values ('Jim Beam')"
 
-while true do
--- for i=1,1000 do
-  local conn        = postgres.connection(config.connection_string)
+local conn = postgres.connection(config.connection_string)
+
+-- while true do
+for i=1,1000 do
   local result, err = conn:execute("SELECT * FROM people WHERE id < $1", {1000})
   local row         = result:fetch()
   local row         = result:fetch_assoc()
   local fields      = result:fields()
-  conn:close()
+  fields[1]:type_name()
 end
+
+conn:close()

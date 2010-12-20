@@ -3,12 +3,12 @@
 #include "postgres.h"
 
 static result* get_result(lua_State *L) {
-    return (result *) luaL_checkudata(L, 1, RESULT_METATABLE);
+    return (result *) luaL_checkudata(L, 1, LPG_RESULT_METATABLE);
 }
 
 static void validate_open(lua_State *L, result *res) {
-    if (res->state != RESULT_OPEN) {
-        luaL_error(L, RESULT_CLOSED_ERROR);
+    if (res->state != LPG_RESULT_OPEN) {
+        luaL_error(L, LPG_RESULT_CLOSED_ERROR);
     }
 }
 
@@ -19,7 +19,7 @@ static int result_gc(lua_State *L) {
     result *res = get_result(L);
     PQclear(res->pg_result);
     res->pg_result   = NULL;
-    res->state       = RESULT_CLOSED;
+    res->state       = LPG_RESULT_CLOSED;
     return 0;
 }
 
@@ -86,7 +86,7 @@ static int result_fields(lua_State *L) {
     validate_open(L, res);
     lua_newtable(L);
     for (i = 0; i < res->num_fields; i++) {
-        new_field(L, res->pg_result, i, PQfname(res->pg_result, i));
+        new_field(L, res, i, PQfname(res->pg_result, i));
         lua_rawseti(L, 2, i+1);
     }
     return 1;
@@ -111,20 +111,21 @@ static const luaL_Reg methods[] = {
 
 // Public functions
 
-int new_result(lua_State *L, PGresult *pg_result) {
+int new_result(lua_State *L, connection *conn, PGresult *pg_result) {
     result *r = ((result *) (lua_newuserdata(L, sizeof(result))));
-    luaL_getmetatable(L, RESULT_METATABLE);
+    luaL_getmetatable(L, LPG_RESULT_METATABLE);
     lua_setmetatable(L, -2);
+    r->conn        = conn;
     r->pg_result   = pg_result;
     r->current_row = 0;
-    r->num_fields = PQnfields(pg_result);
-    r->num_tuples = PQntuples(pg_result);
-    r->state    = RESULT_OPEN;
+    r->num_fields  = PQnfields(pg_result);
+    r->num_tuples  = PQntuples(pg_result);
+    r->state       = LPG_RESULT_OPEN;
     return 1;
 }
 
 void register_result_methods(lua_State *L) {
-    luaL_newmetatable(L, RESULT_METATABLE);
+    luaL_newmetatable(L, LPG_RESULT_METATABLE);
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index");
     luaL_register(L, NULL, methods);

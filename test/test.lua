@@ -163,6 +163,14 @@ context("A field", function()
     assert_equal("number", type(field:type_oid()))
   end)
 
+  it("should have a type name", function()
+    assert_equal("varchar", field:type_name())
+  end)
+
+  it("should have a table name", function()
+    assert_equal("people", field:table_name())
+  end)
+
   it("should have a size", function()
     assert_equal(-1, field:size())
   end)
@@ -170,6 +178,4 @@ context("A field", function()
   it("should have a modifier", function()
     assert_equal(104, field:modifier())
   end)
-
-
 end)

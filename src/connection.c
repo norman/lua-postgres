@@ -1,15 +1,14 @@
-#include <stdlib.h>
 #include "postgres.h"
 
 static connection* get_connection(lua_State *L) {
-    return (connection *) luaL_checkudata(L, 1, CONNECTION_METATABLE);
+    return (connection *) luaL_checkudata(L, 1, LPG_CONNECTION_METATABLE);
 }
 
 static int connect(lua_State *L, connection *conn) {
     PGconn *pg_conn;
     pg_conn = PQconnectdb(conn->connect_string);
     if (PQstatus(pg_conn) != CONNECTION_OK) {
-        conn->state   = CONN_FAILED;
+        conn->state   = LPG_CONN_FAILED;
         lua_pushboolean(L, 0);
         lua_pushstring(L, PQerrorMessage(pg_conn));
         PQfinish(conn->pg_conn);
@@ -17,14 +16,14 @@ static int connect(lua_State *L, connection *conn) {
     }
     else {
         conn->pg_conn = pg_conn;
-        conn->state = CONN_OPEN;
+        conn->state   = LPG_CONN_OPEN;
         return 1;
     }
 }
 
 static void close(connection *conn) {
-    if (conn->state == CONN_OPEN) {
-        conn->state = CONN_CLOSED;
+    if (conn->state == LPG_CONN_OPEN) {
+        conn->state = LPG_CONN_CLOSED;
         PQfinish(conn->pg_conn);
         conn->pg_conn = NULL;
     }
@@ -34,8 +33,8 @@ static void close(connection *conn) {
 
 static int conn_open(lua_State *L) {
     connection *conn = get_connection(L);
-    luaL_argcheck(L, conn->state != CONN_OPEN, 1, "connection already open");
-    luaL_argcheck(L, conn->state != CONN_CLOSED, 1, "connection closed");
+    luaL_argcheck(L, conn->state != LPG_CONN_OPEN, 1, "connection already open");
+    luaL_argcheck(L, conn->state != LPG_CONN_CLOSED, 1, "connection closed");
     if (connect(L, conn)) {
         lua_pushboolean(L, 1);
         lua_pushnil(L);
@@ -45,8 +44,8 @@ static int conn_open(lua_State *L) {
 
 static int conn_close(lua_State *L) {
     connection *conn = get_connection(L);
-    luaL_argcheck(L, conn->state != CONN_NEW, 1, "connection is new");
-    luaL_argcheck(L, conn->state != CONN_CLOSED, 1, "connection already closed");
+    luaL_argcheck(L, conn->state != LPG_CONN_NEW, 1, "connection is new");
+    luaL_argcheck(L, conn->state != LPG_CONN_CLOSED, 1, "connection already closed");
     close(conn);
     lua_pushnil(L);
     return 1;
@@ -61,7 +60,7 @@ static int process_result(lua_State *L, connection *conn, PGresult *pg_result) {
     }
     else if (pg_result && PQresultStatus(pg_result) == PGRES_TUPLES_OK)
         /* tuples returned */
-        return new_result(L, pg_result);
+        return new_result(L, conn, pg_result);
     else {
         /* error */
         PQclear(pg_result);
@@ -117,7 +116,7 @@ static int conn_execute(lua_State *L) {
     connection *conn = get_connection(L);
 
     /* Lazy connect */
-    if (conn->state == CONN_NEW) {
+    if (conn->state == LPG_CONN_NEW) {
         if (!connect(L, conn)) {
             return 2;
         }
@@ -150,7 +149,7 @@ static const luaL_Reg methods[] = {
  * Push the methods into the Lua module.
  */
 void register_connection_methods(lua_State *L) {
-    luaL_newmetatable(L, CONNECTION_METATABLE);
+    luaL_newmetatable(L, LPG_CONNECTION_METATABLE);
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index");
     luaL_register(L, NULL, methods);

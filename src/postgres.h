@@ -1,16 +1,20 @@
+#include <stdlib.h>
 #include <lua.h>
 #include <lauxlib.h>
 #include <libpq-fe.h>
 
-#define LUA_POSTGRES_VERSION "0.0.1"
-#define CONNECTION_METATABLE "Lua Postgres Connection"
-#define RESULT_METATABLE     "Lua Postgres Result"
-#define FIELD_METATABLE     "Lua Postgres Field"
+#define LPG_VERSION "0.0.1"
+#define LPG_CONNECTION_METATABLE "Lua Postgres Connection"
+#define LPG_RESULT_METATABLE     "Lua Postgres Result"
+#define LPG_FIELD_METATABLE      "Lua Postgres Field"
+#define LPG_FIELD_TYPE_TABLE     "Lua Postgres Field Types Table"
+#define LPG_RESULT_CLOSED_ERROR  "Attempted to access a closed result"
 
-#define RESULT_CLOSED_ERROR "Attempted to access a closed result"
+#define LPG_FIELD_TABLE_NAME_QUERY "SELECT relname FROM pg_class WHERE oid = %d"
+#define LPG_FIELD_TYPE_NAME_QUERY  "SELECT typname FROM pg_type WHERE oid = %d"
 
-enum connection_state { CONN_OPEN, CONN_CLOSED, CONN_NEW, CONN_FAILED };
-enum result_state { RESULT_OPEN, RESULT_CLOSED };
+enum connection_state { LPG_CONN_OPEN, LPG_CONN_CLOSED, LPG_CONN_NEW, LPG_CONN_FAILED };
+enum result_state { LPG_RESULT_OPEN, LPG_RESULT_CLOSED };
 
 typedef struct {
     PGconn     *pg_conn;
@@ -19,12 +23,13 @@ typedef struct {
 } connection;
 
 typedef struct {
-    PGresult  *pg_result;
-    int       current_row, num_fields, num_tuples, state;
+    connection *conn;
+    PGresult   *pg_result;
+    int        current_row, num_fields, num_tuples, state;
 } result;
 
 typedef struct {
-  PGresult   *pg_result;
+  result     *result;
   int        number;
   const char *name;
 } field;
@@ -33,5 +38,5 @@ void register_connection_methods(lua_State *L);
 void register_result_methods(lua_State *L);
 void register_field_methods(lua_State *L);
 
-int new_result(lua_State *L, PGresult *result);
-int new_field(lua_State *L, PGresult *result, int number, const char *name);
+int new_result(lua_State *L, connection *conn, PGresult *result);
+int new_field(lua_State *L, result *result, int number, const char *name);

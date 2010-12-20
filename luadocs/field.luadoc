@@ -50,8 +50,25 @@ function table_column_number()
 
 -------------------------------------------------------------------------------
 -- The oid of the table that the field comes from.
+-- @see table_name
 function table_oid()
 
 -------------------------------------------------------------------------------
 -- The oid of the field's type.
+-- @see type_name
 function type_oid()
+
+-------------------------------------------------------------------------------
+-- The name of the table that the field comes from. This is often more useful
+-- than just getting the oid. Note that each time this is invoked, a query is
+-- performed. If you need to call this method many times, it's a good candidate
+-- for memoization.
+-- @see table_oid
+function table_name()
+
+-------------------------------------------------------------------------------
+-- The name field type. This is often more useful than just getting the oid.
+-- Note that each time this is invoked, a query is performed. If you need to
+-- call this method many times, it's a good candidate for memoization.
+-- @see type_oid
+function type_name()
