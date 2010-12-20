@@ -106,8 +106,18 @@ This module provides meta information about result set fields.</p>
 	</tr>
 
 	<tr>
+	<td class="name" nowrap><a href="#table_name">table_name</a>&nbsp;()</td>
+	<td class="summary">The name of the table that the field comes from.</td>
+	</tr>
+
+	<tr>
 	<td class="name" nowrap><a href="#table_oid">table_oid</a>&nbsp;()</td>
 	<td class="summary">The oid of the table that the field comes from.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#type_name">type_name</a>&nbsp;()</td>
+	<td class="summary">The name field type.</td>
 	</tr>
 
 	<tr>
@@ -267,6 +277,37 @@ or when using pre-3.0 protocol.
 
 
 
+<dt><a name="table_name"></a><strong>table_name</strong>&nbsp;()</dt>
+<dd>
+The name of the table that the field comes from. This is often more useful
+than just getting the oid. Note that each time this is invoked, a query is
+performed. If you need to call this method many times, it's a good candidate
+for memoization.
+
+
+
+
+
+
+
+
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/postgres.field.html#table_oid">
+		table_oid
+	</a>
+	
+</ul>
+
+</dd>
+
+
+
+
 <dt><a name="table_oid"></a><strong>table_oid</strong>&nbsp;()</dt>
 <dd>
 The oid of the table that the field comes from.
@@ -280,6 +321,45 @@ The oid of the table that the field comes from.
 
 
 
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/postgres.field.html#table_name">
+		table_name
+	</a>
+	
+</ul>
+
+</dd>
+
+
+
+
+<dt><a name="type_name"></a><strong>type_name</strong>&nbsp;()</dt>
+<dd>
+The name field type. This is often more useful than just getting the oid.
+Note that each time this is invoked, a query is performed. If you need to
+call this method many times, it's a good candidate for memoization.
+
+
+
+
+
+
+
+
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/postgres.field.html#type_oid">
+		type_oid
+	</a>
+	
+</ul>
 
 </dd>
 
@@ -299,6 +379,15 @@ The oid of the field's type.
 
 
 
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/postgres.field.html#type_name">
+		type_name
+	</a>
+	
+</ul>
 
 </dd>
 

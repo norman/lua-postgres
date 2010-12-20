@@ -102,8 +102,18 @@ if you choose.</p>
 	</tr>
 
 	<tr>
+	<td class="name" nowrap><a href="#fields">fields</a>&nbsp;()</td>
+	<td class="summary">Gets an array of fields in the result set.</td>
+	</tr>
+
+	<tr>
 	<td class="name" nowrap><a href="#free">free</a>&nbsp;()</td>
 	<td class="summary">Frees the memory used by a result.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#num_rows">num_rows</a>&nbsp;()</td>
+	<td class="summary">Gets the number of tuples in the result.</td>
 	</tr>
 
 </table>
@@ -187,6 +197,37 @@ A table
 
 
 
+<dt><a name="fields"></a><strong>fields</strong>&nbsp;()</dt>
+<dd>
+Gets an array of fields in the result set.
+
+
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+A table
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/postgres.field.html">
+		postgres.field
+	</a>
+	
+</ul>
+
+</dd>
+
+
+
+
 <dt><a name="free"></a><strong>free</strong>&nbsp;()</dt>
 <dd>
 Frees the memory used by a result. After invoking free(), any attempt to
@@ -199,6 +240,35 @@ to perform operations on the result will raise an error.
 
 
 
+
+
+
+</dd>
+
+
+
+
+<dt><a name="num_rows"></a><strong>num_rows</strong>&nbsp;()</dt>
+<dd>
+Gets the number of tuples in the result. You can also invoke this method with
+the length operator (#).
+
+
+
+
+
+
+
+<h3>Example:</h3>
+<pre class="example">
+assert(10 == #result)
+assert(10 == result:num_rows())
+</pre>
+
+
+
+<h3>Return value:</h3>
+A number
 
 
 
