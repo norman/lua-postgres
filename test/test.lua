@@ -1,5 +1,5 @@
 package.cpath = "./?.so"
-package.path = string.format("test/?.lua;%s", package.path)
+package.path = string.format("src/?.lua;test/?.lua;%s", package.path)
 
 require "postgres"
 

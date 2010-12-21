@@ -1,7 +1,7 @@
 local config = {
   connection =  {
     host    = "localhost",
-    dbname  = "lua_pgsql_test",
+    dbname  = "lua_postgres_test",
     user    = "postgres",
     options = '--client_encoding=UTF-8'
   },

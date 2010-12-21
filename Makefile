@@ -1,26 +1,28 @@
-LUA_DIR= /usr/local
-LUA_LIBDIR= $(LUA_DIR)/lib/lua/5.1
-LIBFLAG= -g -Wall -shared -fpic
-
-PG_LIBDIR=`pg_config --libdir`
-PG_INCDIR=`pg_config --includedir`
+LUA_DIR    = /usr/local
+LUA_LIBDIR = $(LUA_DIR)/lib/lua/5.1
+LIBFLAG    = -g -Wall -shared -fpic
+PG_LIBDIR  = `pg_config --libdir`
+PG_INCDIR  = `pg_config --includedir`
 
 CC=llvm-gcc
 
-postgres.so: src/*.c
-	$(CC) -o postgres.so $(LIBFLAG) $(CFLAGS) src/*.c -L$(LUA_LIBDIR) -llua -I$(PG_INCDIR) -L$(PG_LIBDIR) -lpq
+postgres/core.so: src/*.c
+	-mkdir -p postgres
+	$(CC) -o postgres/core.so $(LIBFLAG) $(CFLAGS) src/*.c -L$(LUA_LIBDIR) -llua -I$(PG_INCDIR) -L$(PG_LIBDIR) -lpq
 
 clean:
-	$(RM) -rf postgres.so*
+	$(RM) -r postgres
 
-test: postgres.so
-	tsc test/test.lua
+test: postgres/core.so
+	-tsc test/test.lua
 
-install: postgres.so
-	cp postgres.so $(LUA_LIBDIR)/
+install: postgres/core.so
+	mkdir -p $(LUA_LIBDIR)/postgres
+	cp -r postgres/core.so $(LUA_LIBDIR)/postgres/core.so
 
 uninstall:
-	$(RM) $(LUA_LIBDIR)/postgres.so
+	-rm  $(LUA_LIBDIR)/postgres/core.so
+	-rmdir $(LUA_LIBDIR)/postgres
 
 rock:
 	luarocks make rockspecs/postgres-scm-1.rockspec

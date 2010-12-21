@@ -22,12 +22,30 @@ static int module_connection(lua_State *L) {
     return 1;
 }
 
+static int module_connection_metatable(lua_State *L) {
+    luaL_getmetatable(L, LPG_CONNECTION_METATABLE);
+    return 1;
+}
+
+static int module_result_metatable(lua_State *L) {
+    luaL_getmetatable(L, LPG_RESULT_METATABLE);
+    return 1;
+}
+
+static int module_field_metatable(lua_State *L) {
+    luaL_getmetatable(L, LPG_FIELD_METATABLE);
+    return 1;
+}
+
 /**
  * Top-level module functions.
  */
 static const struct luaL_Reg functions [] = {
     {"version", module_version},
     {"connection", module_connection},
+    {"connection_metatable", module_connection_metatable},
+    {"result_metatable", module_result_metatable},
+    {"field_metatable", module_field_metatable},
     {NULL, NULL}
 };
 
@@ -38,7 +56,7 @@ void register_module_functions(lua_State *L) {
 /**
  * Lua module setup.
  */
-int luaopen_postgres(lua_State *L) {
+int luaopen_postgres_core(lua_State *L) {
     register_module_functions(L);
     register_connection_methods(L);
     register_result_methods(L);
