@@ -1,3 +1,5 @@
+.PHONY: test
+
 LUA_DIR    = /usr/local
 LUA_LIBDIR = $(LUA_DIR)/lib/lua/5.1
 LIBFLAG    = -g -Wall -shared -fpic
@@ -8,7 +10,7 @@ CC=llvm-gcc
 
 postgres/core.so: src/*.c
 	@-mkdir -p postgres
-	$(CC) -o postgres/core.so $(LIBFLAG) $(CFLAGS) src/*.c -L$(LUA_LIBDIR) -llua -I$(PG_INCDIR) -L$(PG_LIBDIR) -lpq
+	$(CC) -o postgres/core.so $(ARCHFLAGS) $(LIBFLAG) $(CFLAGS) src/*.c -L$(LUA_LIBDIR) -llua -I$(PG_INCDIR) -L$(PG_LIBDIR) -lpq
 
 clean:
 	$(RM) -r postgres
