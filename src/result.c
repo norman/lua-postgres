@@ -1,3 +1,25 @@
+/***
+A Postgres result.
+Postgres results respond to the __len and __call metamethods, so it's possible to
+perform most useful operations on a result without directly invoking methods.
+The example below shows the recommended way to access the rows in a result.
+
+<h3>Example:</h3>
+<pre class="example">
+local result = conn:execute("SELECT * FROM members LIMIT 10")
+assert(10 == #result)
+for row, index in result do
+  print(string.format("Info for result %d:", index))
+  print(row.id, row.name, row.email)
+end
+</pre>
+Lua Postgres also sets a __gc metamethod on results, so there usually is no
+need to free the result when you're done with it. Lua's garbage collection
+will take care of this automatically. However, you can manually free the result
+if you choose.
+
+@module postgres.result
+*/
 #include <string.h>
 #include <ctype.h>
 #include "postgres.h"
@@ -12,9 +34,11 @@ static void validate_open(lua_State *L, result *res) {
     }
 }
 
-/**
- * Invoked by Lua when result is garbage collected.
- */
+/// Frees the memory used by a result. After invoking free(), any attempt to
+// to perform operations on the result will raise an error. Note that this is
+// normally invoked directly by Lua when result is garbage collected, so there
+// is often no need to invoke this manually.
+// @function free
 static int result_gc(lua_State *L) {
     result *res = get_result(L);
     PQclear(res->pg_result);
@@ -38,6 +62,16 @@ static void push_value(lua_State *L, result *res, int i) {
 
 // All result_* functions are exported to Lua.
 
+/// Fetches a row numerically, and advances the internal pointer to the next row.
+// @function fetch
+// @return A table
+// @usage
+// local result, err = conn:execute("SELECT name FROM members LIMIT 10")
+// if err then error(err) end
+// for i = 1, #result do
+//   local row = result:fetch()
+//   print(row[1]) -- prints the name
+// end
 static int result_fetch(lua_State *L) {
     int i;
     result *res = get_result(L);
@@ -55,6 +89,16 @@ static int result_fetch(lua_State *L) {
     return 1;
 }
 
+// Fetches a row as an associative array, and advances the internal pointer to the next row.
+// @function fetch_assoc
+// @return A table
+// @usage
+// local result, err = conn:execute("SELECT name FROM members LIMIT 10")
+// if err then error(err) end
+// for i = 1, #result do
+//   local row = result:fetch_assoc()
+//   print(row.name)
+// end
 static int result_fetch_assoc(lua_State *L) {
     int i;
     result *res = get_result(L);
@@ -73,6 +117,13 @@ static int result_fetch_assoc(lua_State *L) {
     return 1;
 }
 
+/// Gets the number of tuples in the result. You can also invoke this method with
+// the length operator (#).
+// @function num_rows
+// @return A number
+// @usage
+// assert(10 == #result)
+// assert(10 == result:num_rows())
 static int result_num_tuples(lua_State *L) {
     result *res = get_result(L);
     validate_open(L, res);
@@ -80,6 +131,9 @@ static int result_num_tuples(lua_State *L) {
     return 1;
 }
 
+/// Gets an array of fields in the result set.
+// @function fields
+// @return A table
 static int result_fields(lua_State *L) {
     int i;
     result *res = get_result(L);

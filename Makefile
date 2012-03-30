@@ -33,4 +33,4 @@ memtest: test/memtest.lua
 	@valgrind --leak-check=full lua test/memtest.lua
 
 doc:
-	luadoc -r README.md --nofiles -d docs luadocs/*.luadoc
+	ldoc.lua -f markdown src/

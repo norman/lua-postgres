@@ -1,3 +1,8 @@
+/***
+A Postgres connection.
+
+@module postgres.connection
+*/
 #include "postgres.h"
 
 static connection* get_connection(lua_State *L) {
@@ -31,6 +36,13 @@ static void close(connection *conn) {
 
 // conn_* functions are exported as Lua methods.
 
+/// Opens the connection to the Postgres server.
+// @function open
+// @return status - Whether or not the connection succeeded.
+// @return message - If the connection failed to open, an error message.
+// @usage
+// local ok, err = conn:open()
+// if err then error(err) end
 static int conn_open(lua_State *L) {
     connection *conn = get_connection(L);
     luaL_argcheck(L, conn->state != LPG_CONN_OPEN, 1, "connection already open");
@@ -112,6 +124,15 @@ static int execute_with_params(lua_State *L) {
     return process_result(L, conn, pg_result);
 }
 
+/// Executes a query.
+// @function execute
+// @param sql An SQL query
+// @param params A single parameter, or a table of parameters
+// @return result - A result userdata or nil on failure.
+// @return message - If execution failed, an error message
+// @usage
+// local result, error = conn:execute("SELECT * FROM users WHERE name = $1", "joe")
+// local result, error = conn:execute("SELECT * FROM users WHERE name = $1 AND age < $2", {"joe", 100})
 static int conn_execute(lua_State *L) {
     connection *conn = get_connection(L);
 
