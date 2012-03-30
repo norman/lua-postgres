@@ -7,14 +7,14 @@ PG_INCDIR  = `pg_config --includedir`
 CC=llvm-gcc
 
 postgres/core.so: src/*.c
-	-mkdir -p postgres
+	@-mkdir -p postgres
 	$(CC) -o postgres/core.so $(LIBFLAG) $(CFLAGS) src/*.c -L$(LUA_LIBDIR) -llua -I$(PG_INCDIR) -L$(PG_LIBDIR) -lpq
 
 clean:
 	$(RM) -r postgres
 
 test: postgres/core.so
-	-tsc test/test.lua
+	@-tsc test/test.lua
 
 install: postgres/core.so
 	mkdir -p $(LUA_LIBDIR)/postgres
@@ -28,7 +28,7 @@ rock:
 	luarocks make rockspecs/postgres-scm-1.rockspec
 
 memtest: test/memtest.lua
-	valgrind --leak-check=full lua test/memtest.lua
+	@valgrind --leak-check=full lua test/memtest.lua
 
 doc:
 	luadoc -r README.md --nofiles -d docs luadocs/*.luadoc
