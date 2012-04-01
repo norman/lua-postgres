@@ -6,7 +6,7 @@ LIBFLAG    = -g -Wall -shared -fpic
 PG_LIBDIR  = `pg_config --libdir`
 PG_INCDIR  = `pg_config --includedir`
 
-CC=llvm-gcc
+CC=gcc
 
 postgres/core.so: src/*.c
 	@-mkdir -p postgres
