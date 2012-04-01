@@ -3,7 +3,6 @@ package.path = string.format("src/?.lua;test/?.lua;%s", package.path)
 
 require "postgres"
 
-local pretty    = require "pl.pretty"
 local config    = require "test_config"
 local conn, err = postgres.connection(config.connection_string)
 if err then error(err) end
