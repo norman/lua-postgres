@@ -70,9 +70,9 @@ void register_module_functions(lua_State *L) {
  * Lua module setup.
  */
 int luaopen_postgres_core(lua_State *L) {
-    register_module_functions(L);
     register_connection_methods(L);
     register_result_methods(L);
     register_field_methods(L);
+    register_module_functions(L);
     return 1;
 }

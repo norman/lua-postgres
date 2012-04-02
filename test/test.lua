@@ -1,7 +1,7 @@
 package.cpath = "./?.so"
 package.path = string.format("src/?.lua;test/?.lua;%s", package.path)
 
-require "postgres"
+local postgres = require "postgres"
 
 local config    = require "test_config"
 local conn, err = postgres.connection(config.connection_string)

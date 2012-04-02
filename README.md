@@ -29,13 +29,29 @@ rather than just a direct translation of libpq to Lua.
 
 ## Compatibility
 
-Lua Postgres has only been tested with Postgres 9.x and Lua 5.1.4, on Linux and
-Mac OS X.
+* Lua 5.1 and 5.2
+* Verified working on Linux and OS X. Should work fine on *BSD but not yet tested.
+* Windows (probably, but not tested. Please let me know if you have problems.)
 
-I don't intend to test it with older versions of Postgres or Lua since I don't
-use them any more.
+## Example code
 
-I have not yet tested this on Windows, or on Lua 5.2. Support is planned.
+    local postgres = require "postgres"
+    local conn, err = postgres.connection("dbname: my_database")
+    if err then error(err) end
+
+    local function emit(query)
+      local result, err = conn:execute(query)
+      if not result then error(err) end
+      return result
+    end
+
+    emit("DROP TABLE IF EXISTS people")
+    emit("CREATE TABLE people(id SERIAL NOT NULL PRIMARY KEY, name VARCHAR(255))")
+    emit "insert into people (name) values ('Joe Schmoe')"
+    emit "insert into people (name) values ('John Doe')"
+    emit "insert into people (name) values ('Jim Beam')"
+
+    print(conn:execute("SELECT * FROM people WHERE id IN ($1)", "1,2,3"))
 
 
 ## Acknowledgements

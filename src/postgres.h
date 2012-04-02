@@ -1,6 +1,18 @@
 #include <stdlib.h>
 #include <lua.h>
 #include <lauxlib.h>
+
+/*
+ * Compatibility with Lua 5.2
+*/
+#if (LUA_VERSION_NUM == 502)
+#undef lua_objlen
+#define lua_objlen  lua_rawlen
+
+#undef luaL_register
+#define luaL_register(L, n, f) { luaL_setfuncs(L, f, 0); }
+#endif
+
 #include <libpq-fe.h>
 
 #define LPG_VERSION "0.0.1"

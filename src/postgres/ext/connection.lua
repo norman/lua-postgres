@@ -1,3 +1,4 @@
+local postgres = require "postgres.core"
 local connection_methods = {}
 
 function connection_methods:meta_info(table_name)
