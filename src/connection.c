@@ -150,6 +150,28 @@ static int lazy_connect(lua_State *L) {
     return 0;
 }
 
+static int send_without_params(lua_State *L) {
+    return 0;
+}
+
+static int send_with_params(lua_State *L) {
+    return 0;
+}
+
+static int conn_send(lua_State *L) {
+    int result = lazy_connect(L);
+    if (result != 0) {
+        return result;
+    }
+
+    if (lua_gettop(L) == 2) {
+        return send_without_params(L);
+    } else {
+        return send_with_params(L);
+    }
+}
+
+
 /// Executes a query.
 // @function execute
 // @param sql An SQL query
@@ -185,6 +207,7 @@ static const luaL_Reg methods[] = {
     {"open",    conn_open},
     {"close",   conn_close},
     {"execute", conn_execute},
+    {"send",    conn_send},
     {NULL, NULL}
 };
 
