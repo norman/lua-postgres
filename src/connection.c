@@ -89,39 +89,65 @@ static int execute_without_params(lua_State *L) {
     return process_result(L, conn, pg_result);
 }
 
-static int execute_with_params(lua_State *L) {
-    connection *conn      = get_connection(L);
-    const char *statement = luaL_checkstring(L, 2);
-    char **params         = NULL;
-    int num_params, i;
-
+static int count_params(lua_State *L) {
+    int n = 1;
     if (lua_istable(L, 3)) {
-        num_params = lua_objlen(L, 3);
-        if (num_params > 0) {
-            params = (char **) malloc(num_params * sizeof(char *));
-            if(params == NULL) {
-              fputs("Out of memory.\n", stderr);
-              exit(EXIT_FAILURE);
-            }
-            for (i = 0; i < num_params; i++) {
-                lua_rawgeti(L, 3, i + 1);
-                params[i] = (char *) lua_tostring(L, -1);
-                lua_pop(L, 1);
-            }
-        }
+        n = lua_objlen(L, 3);
     }
     else if (lua_isnone(L, 3) || lua_isnil(L, 3)) {
-        num_params = 0;
+        n = 0;
+    }
+    return n;
+}
+
+static char **prepare_params(lua_State *L) {
+    int n = count_params(L);
+    int i;
+    char **params  = NULL;
+
+    if (n == 0) {
+        return params;
+    }
+    else if (lua_istable(L, 3)) {
+        params = (char **) malloc(n * sizeof(char *));
+        if(params == NULL) {
+          fputs("Out of memory.\n", stderr);
+          exit(EXIT_FAILURE);
+        }
+        for (i = 0; i < n; i++) {
+            lua_rawgeti(L, 3, i + 1);
+            params[i] = (char *) lua_tostring(L, -1);
+            lua_pop(L, 1);
+        }
     }
     else {
-        num_params = 1;
         params = (char **) malloc(sizeof(char *));
         params[0] = (char *) lua_tostring(L, 3);
     }
-    PGresult *pg_result = PQexecParams(conn->pg_conn, statement, num_params, NULL,
+    return params;
+}
+
+static int execute_with_params(lua_State *L) {
+    connection *conn      = get_connection(L);
+    const char *statement = luaL_checkstring(L, 2);
+    int nparams           = count_params(L);
+    char **params         = prepare_params(L);
+
+    PGresult *pg_result = PQexecParams(conn->pg_conn, statement, nparams,  NULL,
         (const char * const *) params, NULL, NULL, 0);
     free(params);
     return process_result(L, conn, pg_result);
+}
+
+static int lazy_connect(lua_State *L) {
+    connection *conn = get_connection(L);
+
+    if (conn->state == LPG_CONN_NEW) {
+        if (!connect(L, conn)) {
+            return 2;
+        }
+    }
+    return 0;
 }
 
 /// Executes a query.
@@ -134,13 +160,9 @@ static int execute_with_params(lua_State *L) {
 // local result, error = conn:execute("SELECT * FROM users WHERE name = $1", "joe")
 // local result, error = conn:execute("SELECT * FROM users WHERE name = $1 AND age < $2", {"joe", 100})
 static int conn_execute(lua_State *L) {
-    connection *conn = get_connection(L);
-
-    /* Lazy connect */
-    if (conn->state == LPG_CONN_NEW) {
-        if (!connect(L, conn)) {
-            return 2;
-        }
+    int result = lazy_connect(L);
+    if (result != 0) {
+        return result;
     }
 
     if (lua_gettop(L) == 2) {
