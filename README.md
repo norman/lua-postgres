@@ -45,8 +45,8 @@ rather than just a direct translation of libpq to Lua.
       return result
     end
 
-    emit("DROP TABLE IF EXISTS people")
-    emit("CREATE TABLE people(id SERIAL NOT NULL PRIMARY KEY, name VARCHAR(255))")
+    emit "DROP TABLE IF EXISTS people"
+    emit "CREATE TABLE people(id SERIAL NOT NULL PRIMARY KEY, name VARCHAR(255))"
     emit "insert into people (name) values ('Joe Schmoe')"
     emit "insert into people (name) values ('John Doe')"
     emit "insert into people (name) values ('Jim Beam')"
