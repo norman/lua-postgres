@@ -1,30 +1,41 @@
 .PHONY: test
 
-LUA_DIR    = /usr/local
-LUA_LIBDIR = $(LUA_DIR)/lib/lua/5.1
-LIBFLAG    = -Wall -shared -fpic
-PG_LIBDIR  = `pg_config --libdir`
-PG_INCDIR  = `pg_config --includedir`
+LUA_VERSION  = $(shell lua -e 'print(_VERSION:sub(5,7))')
+LUA_DIR      = /usr/local
+LUA_LIBDIR   = $(LUA_DIR)/lib/lua/$(LUA_VERSION)
+LUA_SHAREDIR = $(LUA_DIR)/share/lua/$(LUA_VERSION)
 
-CC=gcc
+PG_LIBDIR    = $(shell pg_config --libdir)
+PG_INCDIR    = $(shell pg_config --includedir)
+
+LIBFLAG      = -Wall -shared -fpic
+
+CC=cc
 
 postgres/core.so: src/*.c
 	@-mkdir -p postgres
 	$(CC) -o postgres/core.so $(ARCHFLAGS) $(LIBFLAG) $(CFLAGS) src/*.c -L$(LUA_LIBDIR) -llua -I$(PG_INCDIR) -L$(PG_LIBDIR) -lpq
 
 clean:
-	$(RM) -r postgres
+	rm -r postgres
 
 test: postgres/core.so
 	@-tsc test/test.lua
 
 install: postgres/core.so
 	mkdir -p $(LUA_LIBDIR)/postgres
-	cp -r postgres/core.so $(LUA_LIBDIR)/postgres/core.so
+	mkdir -p $(LUA_SHAREDIR)/postgres
+	cp  postgres/core.so $(LUA_LIBDIR)/postgres/core.so
+	cp  -r src/postgres/ext $(LUA_SHAREDIR)/postgres
+	cp  -r src/postgres.lua $(LUA_SHAREDIR)/postgres.lua
 
 uninstall:
-	-rm  $(LUA_LIBDIR)/postgres/core.so
+	-rm    $(LUA_LIBDIR)/postgres/core.so
 	-rmdir $(LUA_LIBDIR)/postgres
+	-rm    $(LUA_SHAREDIR)/postgres.lua
+	-rm    $(LUA_SHAREDIR)/postgres/ext/connection.lua
+	-rmdir $(LUA_SHAREDIR)/postgres/ext
+	-rmdir $(LUA_SHAREDIR)/postgres
 
 rock:
 	luarocks make rockspecs/postgres-scm-1.rockspec
