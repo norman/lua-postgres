@@ -2,7 +2,7 @@
 
 LUA_DIR    = /usr/local
 LUA_LIBDIR = $(LUA_DIR)/lib/lua/5.1
-LIBFLAG    = -g -Wall -shared -fpic
+LIBFLAG    = -Wall -shared -fpic
 PG_LIBDIR  = `pg_config --libdir`
 PG_INCDIR  = `pg_config --includedir`
 
