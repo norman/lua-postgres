@@ -1,4 +1,4 @@
-.PHONY: test
+.PHONY: test spec
 
 LUA_VERSION  = $(shell lua -e 'print(_VERSION:sub(5,7))')
 LUA_DIR      = /usr/local
@@ -21,6 +21,9 @@ clean:
 
 test: postgres/core.so
 	@-tsc test/test.lua
+
+spec: postgres/core.so
+	@-tsc -f test/test.lua
 
 install: postgres/core.so
 	mkdir -p $(LUA_LIBDIR)/postgres
