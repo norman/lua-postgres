@@ -29,7 +29,7 @@ uninstall:
 rock:
 	luarocks make rockspecs/postgres-scm-1.rockspec
 
-memtest: test/memtest.lua
+memtest: clean postgres/core.so
 	@valgrind --leak-check=full lua test/memtest.lua
 
 doc:
